@@ -1,6 +1,6 @@
 Yii2 widgetto
 ================
-This is simple widget allows to replase peases in HTML code;
+This is simple widget allows to replace peases in HTML code;
 For example:
 ```php
 <?=
