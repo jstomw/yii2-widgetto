@@ -1,6 +1,6 @@
 <?php
 
-namespace common\widgets\widgetto;
+namespace exru\widgetto;
 
 use Exception;
 use yii\base\Widget;
