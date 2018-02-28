@@ -29,20 +29,23 @@ class Widgetto extends Widget
     public $endTag = "\]\]";
 
     /**
-     * Array of widgets
+     * Array of widgets. For example:
      * [
-     *      'parsing_name'=>[
+     *      'FOO_WIDGET'=>[
      *          'class'=>Widget::className(),
-     *          'option1'=>'foo',
-     *          'option2'=>'bar',
+     *          'foo_option'=>'bar_value', //may overload by passed json params
      *      ],
+     *      'BAR_WIDGET'=>function($widget_name, $options){
+     *          //$options (if json sets)
+     *      },
+     *      'BAZ_WIDGET'=>'Some string'
      * ]
      * @var array
      */
     public $widgets = [];
 
     /**
-     * Don't show peases
+     * Hide wrong widgets
      * @var bool
      */
     public $escapeWrongResult = true;
@@ -52,15 +55,26 @@ class Widgetto extends Widget
         foreach ($this->widgets as $parsing_name => $options) {
             $this->html = preg_replace_callback("/{$this->beginTag}$parsing_name.*?{$this->endTag}/s", function ($match) use ($parsing_name) {
                 $peace = current($match);
-                $widget = ArrayHelper::getValue($this->widgets, $parsing_name);
+                $widget_params = ArrayHelper::getValue($this->widgets, $parsing_name);
                 try {
-                    if ($json = preg_replace(["/{$this->beginTag}$parsing_name/s", "/{$this->endTag}/s"], '', $peace)) {
+                    $options = false;
+                    $json = trim(preg_replace(["/{$this->beginTag}$parsing_name/s", "/{$this->endTag}/s"], '', $peace));
+                    if ($json) {
                         $options = Json::decode($json);
-                        $widget = ArrayHelper::merge($widget, $options);
                     }
-                    if ($data = \Yii::createObject($widget)) {
-                        return $data->run();
+                    if (gettype($widget_params) == 'array') {
+                        $widget_params = ArrayHelper::merge($widget_params, $options);
+                        if ($data = \Yii::createObject($widget_params)) {
+                            return $data->run();
+                        }
                     }
+                    if (gettype($widget_params) == 'string') {
+                        return $widget_params;
+                    }
+                    if ($widget_params instanceof \Closure) {
+                        return call_user_func($widget_params, $parsing_name, $options);
+                    }
+
                 } catch (Exception $e) {
                     if (!$this->escapeWrongResult && YII_DEBUG == true) {
                         var_dump($e);

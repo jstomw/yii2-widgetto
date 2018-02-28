@@ -5,13 +5,13 @@ For example:
 ```php
 <?=
 	Widgetto::widget([
-		'html'=>'<div>[[some_useful_widget {"a":"1", "b":"2", "c":"3"}]]</div>',
+		'html'=>'<div>[[foo_widget {"passing_param":"123"}]]</div>',
 		'widgets'=>[
-			'some_useful_widget'=>[
-				'class'=>'\common\widgets\ABCWidget',
+			'foo_widget'=>[
+				'class'=>'\common\widgets\MyWidget',
 			]
 		]
-	]); //will output something like... <div>123</div>
+	]); //will output something like "<div>123</div>"
 ?>
 
 ```
