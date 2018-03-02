@@ -57,7 +57,7 @@ class Widgetto extends Widget
                 $peace = current($match);
                 $widget_params = ArrayHelper::getValue($this->widgets, $parsing_name);
                 try {
-                    $options = false;
+                    $options = [];
                     $json = trim(preg_replace(["/{$this->beginTag}$parsing_name/s", "/{$this->endTag}/s"], '', $peace));
                     if ($json) {
                         $options = Json::decode($json);
