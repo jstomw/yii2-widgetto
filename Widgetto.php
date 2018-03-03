@@ -60,9 +60,10 @@ class Widgetto extends Widget
                     $options = [];
                     $json = trim(preg_replace(["/{$this->beginTag}$parsing_name/s", "/{$this->endTag}/s"], '', $peace));
                     try {
-                        $options = Json::decode($json);
-                    } catch (\Exception $e) {
-                    }
+                        if ($json = Json::decode($json)) {
+                            $options = $json;
+                        }
+                    } catch (Exception $e) {}
                     if (gettype($widget_params) == 'array') {
                         $widget_params = ArrayHelper::merge($widget_params, $options);
                         if ($data = \Yii::createObject($widget_params)) {
