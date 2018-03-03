@@ -59,8 +59,9 @@ class Widgetto extends Widget
                 try {
                     $options = [];
                     $json = trim(preg_replace(["/{$this->beginTag}$parsing_name/s", "/{$this->endTag}/s"], '', $peace));
-                    if ($json) {
+                    try {
                         $options = Json::decode($json);
+                    } catch (\Exception $e) {
                     }
                     if (gettype($widget_params) == 'array') {
                         $widget_params = ArrayHelper::merge($widget_params, $options);
