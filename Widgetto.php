@@ -62,8 +62,7 @@ class Widgetto extends Widget
     public function extractJsonParams($w_name, $item)
     {
         $options = [];
-        //remove first & last tags or clear invalid json
-        if ($j_params = trim(preg_replace(["/{$this->beginTag}$w_name/s", "/{$this->endTag}/s"], '', $item))) {
+        if ($j_params = trim(preg_replace(["/{$this->beginTag}$w_name\s+/s", "/{$this->endTag}/s"], '', $item))) {
             if ($this->htmlEntitesDecode) {
                 $j_params = html_entity_decode($j_params);
                 $j_params = preg_replace(['/(<[^>]+\=)"([^"]+)">/s', '/[\t]+/s', '/[\r\n]+/s'], ['$1\"$2\">', '', ' '], $j_params);
@@ -108,7 +107,7 @@ class Widgetto extends Widget
     public function replaceAllWidgets()
     {
         foreach ($this->widgets as $w_name => $options) {
-            $this->html = preg_replace_callback("/{$this->beginTag}$w_name.*?{$this->endTag}/s", function ($match) use ($w_name) {
+            $this->html = preg_replace_callback("/{$this->beginTag}$w_name(\s+\{.*\})?{$this->endTag}/s", function ($match) use ($w_name) {
                 $item = current($match);
                 $j_params = $this->extractJsonParams($w_name, $item);
                 $w_params = ArrayHelper::getValue($this->widgets, $w_name);
