@@ -66,7 +66,7 @@ class Widgetto extends Widget
         if ($j_params = trim(preg_replace(["/{$this->beginTag}$w_name/s", "/{$this->endTag}/s"], '', $item))) {
             if ($this->htmlEntitesDecode) {
                 $j_params = html_entity_decode($j_params);
-                $j_params = preg_replace('/(<[^>]+\=)"([^"]+)">/s', '$1\"$2\">', $j_params);
+                $j_params = preg_replace(['/(<[^>]+\=)"([^"]+)">/s', '/[\t]+/s', '/[\r\n]+/s'], ['$1\"$2\">', '', ' '], $j_params);
             }
             try { //don't handle with exception
                 if ($p_params = Json::decode($j_params)) {
