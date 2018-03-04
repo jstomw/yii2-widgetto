@@ -62,7 +62,7 @@ class Widgetto extends Widget
     public function extractJsonParams($w_name, $item)
     {
         $options = [];
-        if ($j_params = trim(preg_replace(["/{$this->beginTag}$w_name\s+/s", "/{$this->endTag}/s"], '', $item))) {
+        if ($j_params = preg_replace(["/{$this->beginTag}$w_name\s+/s", "/{$this->endTag}/s"], '', $item)) {
             if ($this->htmlEntitesDecode) {
                 $j_params = html_entity_decode($j_params);
                 $j_params = preg_replace(['/(<[^>]+\=)"([^"]+)">/s', '/[\t]+/s', '/[\r\n]+/s'], ['$1\"$2\">', '', ' '], $j_params);
