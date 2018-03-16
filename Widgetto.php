@@ -107,7 +107,7 @@ class Widgetto extends Widget
     public function replaceAllWidgets()
     {
         foreach ($this->widgets as $w_name => $options) {
-            $this->html = preg_replace_callback("/{$this->beginTag}$w_name(\s+\{.*?\})?{$this->endTag}/s", function ($match) use ($w_name) {
+            $this->html = preg_replace_callback("/{$this->beginTag}$w_name(\s+[^\]]+)?{$this->endTag}/s", function ($match) use ($w_name) {
                 $item = current($match);
                 $j_params = $this->extractJsonParams($w_name, $item);
                 $w_params = ArrayHelper::getValue($this->widgets, $w_name);
