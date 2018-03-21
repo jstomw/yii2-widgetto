@@ -59,10 +59,10 @@ class Widgetto extends Widget
      * @param $item string peace of text
      * @return array|mixed
      */
-    public function extractJsonParams($w_name, $item)
+    public function extractJsonParams($w_name, $item, &$errors)
     {
         $options = [];
-        if ($j_params = preg_replace(["/{$this->beginTag}$w_name\s*/s", "/{$this->endTag}/s"], ['', ''], $item)) {
+        if ($j_params = preg_replace(["/{$this->beginTag}$w_name\s*/s", "/{$this->endTag}/s"], '', $item)) {
             if ($this->htmlEntitesDecode) {
                 $j_params = html_entity_decode($j_params, ENT_NOQUOTES);
                 $j_params = preg_replace(
@@ -84,6 +84,7 @@ class Widgetto extends Widget
                     $options = $p_params;
                 }
             } catch (Exception $e) {
+                $errors[] = $e;
             }
         }
         return $options;
@@ -121,7 +122,10 @@ class Widgetto extends Widget
         foreach ($this->widgets as $w_name => $options) {
             $this->html = preg_replace_callback("/{$this->beginTag}$w_name(\s+[^\]]+)?{$this->endTag}/s", function ($match) use ($w_name) {
                 $item = current($match);
-                $j_params = $this->extractJsonParams($w_name, $item);
+                $j_params = $this->extractJsonParams($w_name, $item, $errors);
+                if($errors){
+                    return $item;
+                }
                 $w_params = ArrayHelper::getValue($this->widgets, $w_name);
                 return $this->replaceOneWidget($w_params, $j_params, $w_name);
             }, $this->html);
