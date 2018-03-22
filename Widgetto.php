@@ -45,11 +45,6 @@ class Widgetto extends Widget
     public $widgets = [];
 
     /**
-     * Hide not rendered widgets
-     */
-    public $escapeWrongResult = true;
-
-    /**
      * Decode HTML entities before extract json params
      * For example:
      * //{"text":"&lt;h4 style="float:right;"&gt;foo text&lt;/h4&gt;"}
@@ -64,20 +59,19 @@ class Widgetto extends Widget
      * @param $item string peace of text
      * @return array|mixed
      */
-
     public function extractJsonParams($w_name, $item, &$errors)
     {
         $options = [];
         if ($j_params = preg_replace(["/{$this->beginTag}$w_name\s*/s", "/{$this->endTag}/s"], '', $item)) {
             if ($this->htmlEntitesDecode) {
                 $j_params = html_entity_decode($j_params, ENT_NOQUOTES);
-                $j_params = preg_replace(
+                $s = $j_params = preg_replace(
                     [
-                        '/(<[^>]+=)("|\')([^>]+)("|\')>/s',
+                        '/=(")([^">]+)(")/s',
                         '/[\s]+/s',
                     ],
                     [
-                        '$1\\\"$3\\\">',
+                        "=\\\"$2\\\"",
                         ' ',
                     ], $j_params
                 );
@@ -100,6 +94,7 @@ class Widgetto extends Widget
      * @param $w_params array|mixed default widget params
      * @param $j_params array|mixed extracted widget params
      * @param $w_name string Widget name
+     * @return array|mixed
      */
     public function replaceOneWidget($w_params, $j_params, $w_name)
     {
@@ -128,7 +123,7 @@ class Widgetto extends Widget
             $this->html = preg_replace_callback("/{$this->beginTag}$w_name(\s+[^\]]+)?{$this->endTag}/s", function ($match) use ($w_name) {
                 $item = current($match);
                 $j_params = $this->extractJsonParams($w_name, $item, $errors);
-                if($errors && !$this->escapeWrongResult){
+                if($errors){
                     return $item;
                 }
                 $w_params = ArrayHelper::getValue($this->widgets, $w_name);
