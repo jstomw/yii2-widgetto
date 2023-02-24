@@ -1,16 +1,16 @@
 {
-    "name": "exru/yii2-widgetto",
+    "name": "jstomw/yii2-widgetto",
     "description": "Wrapper for nested widgets",
     "type": "library",
     "require": {
         "yiisoft/yii2": ">=2.0.7",
-        "exru/yii2-crud": "dev-master"
+        "jstomw/yii2-crud": "dev-master"
     },
     "license": "GPL-3.0",
     "authors": [
         {
             "name": "Vyacheslav Titov",
-            "email": "exerus0@gmail.com"
+            "email": "justonlymyway0@gmail.com"
         }
     ],
     "minimum-stability": "beta",
